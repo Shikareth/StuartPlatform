@@ -436,22 +436,6 @@ namespace Tools.Math
             Rows = Columns;
         }
 
-        public Tuple<Vector3D, double> ToAxisAngle()
-        {
-            Vector3D axis = new Vector3D();
-            double angle = System.Math.Acos((Data[0] + Data[4] + Data[9] - 1) / 2);
-            double div = System.Math.Sqrt(
-                System.Math.Pow(Data[7] - Data[5], 2) + 
-                System.Math.Pow(Data[2] - Data[6], 2) + 
-                System.Math.Pow(Data[3] - Data[1], 2));
-
-            axis.X = (Data[7] - Data[5]) / div;
-            axis.Y = (Data[2] - Data[6]) / div;
-            axis.Z = (Data[3] - Data[1]) / div;
-
-            return new Tuple<Vector3D, double>(axis, angle);
-        }
-
         public Matrix Minor(int row, int column)
         {
             double[] array = new double[(Rows - 1) * (Columns - 1)];

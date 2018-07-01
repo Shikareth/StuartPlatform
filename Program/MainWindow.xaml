@@ -22,11 +22,43 @@
                 </helix:CoordinateSystemVisual3D.Transform>
             </helix:CoordinateSystemVisual3D>
 
-            <!-- Stuart Platform model -->
+            <!-- ##################################################     Model     ################################################## -->
+            <!-- ################################################## Base Platform ################################################## -->
+            <helix:PipeVisual3D Fill="Aquamarine" Point1="0 0 0" Point2="0 0 0.1" 
+                                Diameter="{Binding Path=Model.BasePlatform.Diameter, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                InnerDiameter="0">
+                <helix:PipeVisual3D.Transform>
+                    <Transform3DGroup>
+                        <TranslateTransform3D OffsetX="{Binding Path=Model.BasePlatform.Position.X, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                              OffsetY="{Binding Path=Model.BasePlatform.Position.Y, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                              OffsetZ="{Binding Path=Model.BasePlatform.Position.Z, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Transform3DGroup>
+                </helix:PipeVisual3D.Transform>
+            </helix:PipeVisual3D>
 
-            
-            
-            
+            <!-- ################################################## Work Platform ################################################## -->
+            <helix:PipeVisual3D Fill="Gold" Point1="0 0 0" Point2="0 0 -0.1" 
+                                Diameter="{Binding Path=Model.WorkPlatform.Diameter, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                InnerDiameter="0">
+                <helix:PipeVisual3D.Transform>
+                    <Transform3DGroup>
+                        <TranslateTransform3D OffsetX="{Binding Path=Model.WorkPlatform.Position.X, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                              OffsetY="{Binding Path=Model.WorkPlatform.Position.Y, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                              OffsetZ="{Binding Path=Model.WorkPlatform.Position.Z, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Transform3DGroup>
+                </helix:PipeVisual3D.Transform>
+            </helix:PipeVisual3D>
+            <helix:CoordinateSystemVisual3D>
+                <helix:CoordinateSystemVisual3D.Transform>
+                    <Transform3DGroup>
+                        <TranslateTransform3D OffsetX="{Binding Path=Model.WorkPlatform.Position.X, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                              OffsetY="{Binding Path=Model.WorkPlatform.Position.Y, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                              OffsetZ="{Binding Path=Model.WorkPlatform.Position.Z, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Transform3DGroup>
+                </helix:CoordinateSystemVisual3D.Transform>
+            </helix:CoordinateSystemVisual3D>
+
+            <!-- ##################################################   Actuators   ################################################## -->
             <helix:PipeVisual3D Diameter="0.1" InnerDiameter="0" 
                                 Fill="{Binding Path=Model.Actuators[0], Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Actuator_to_Fill_Converter}}"
                                 Point1="{Binding Path=Model.BasePlatform.Joints[0].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"
@@ -74,10 +106,6 @@
             <helix:PipeVisual3D Diameter="0.2" InnerDiameter="0" Fill="Brown"
                                 Point1="{Binding Path=Model.BasePlatform.Joints[5].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"
                                 Point2="{Binding Path=Model.Actuators[5].BaseEnd, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"/>
-
-
-            <!-- Stuart Platform model -->
-
         </helix:HelixViewport3D>
     </Grid>
 </Window>

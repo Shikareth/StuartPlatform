@@ -71,6 +71,12 @@ namespace Program.Models
                     SetJoints();
                 }
             }
+            public double Diameter
+            { 
+                get {
+                    return 2 * radius;
+                }
+            }
             private double radius = 1.0;
 
             /// <summary>
