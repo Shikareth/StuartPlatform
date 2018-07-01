@@ -1,0 +1,17 @@
+﻿<Application x:Class="Program.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Program"
+             xmlns:converters="clr-namespace:Program.Converters"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <converters:Bool_to_Negative x:Key="Bool_to_Negative_Converter"/>
+
+        <converters:Double_to_Half x:Key="Double_to_Half_Converter"/>
+        <converters:Double_to_Multiplied x:Key="Double_to_Multiplied_Converter"/>
+
+        <converters:Vector3D_to_Point3D x:Key="Vector3D_to_Point3D_Converter"/>
+
+        <converters:Actuator_to_Fill x:Key="Actuator_to_Fill_Converter"/>
+    </Application.Resources>
+</Application>
