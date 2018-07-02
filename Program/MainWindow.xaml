@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:Program"
         xmlns:converters="clr-namespace:Program.Converters"
         xmlns:helix="http://helix-toolkit.org/wpf"
@@ -10,15 +11,24 @@
         Title="MainWindow" Height="450" Width="800"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Initialized="Window_Initialized">
+    <Window.Resources>
+        <SolidColorBrush x:Key="ActuatorBaseColor" Color="Brown"/>
+        <sys:Double x:Key="ActuatorBaseDiameter">1.0</sys:Double>
+        <sys:Double x:Key="ActuatorShaftDiameter">0.5</sys:Double>
+        <sys:Double x:Key="ActuatorInnerDiameter">0.0</sys:Double>
+    </Window.Resources>
     <Grid>
         <helix:HelixViewport3D x:Name="Viewport" Background="Black" ZoomExtentsWhenLoaded="True" 
                                MouseDoubleClick="HelixViewport3D_MouseDoubleClick"
                                KeyDown="Viewport_KeyDown">
             <helix:SunLight/>
-            <helix:RectangleVisual3D x:Name="Ground" Width="10" Length="10" Fill="LightGray"/>
+            <helix:RectangleVisual3D x:Name="Ground" Width="33" Length="33" Fill="LightGray"/>
             <helix:CoordinateSystemVisual3D >
                 <helix:CoordinateSystemVisual3D.Transform>
-                    <TranslateTransform3D OffsetX="-5" OffsetY="-5"/>
+                    <Transform3DGroup>
+                        <ScaleTransform3D ScaleX="5" ScaleY="5" ScaleZ="5"/>
+                        <TranslateTransform3D OffsetX="-16.5" OffsetY="-16.5"/>
+                    </Transform3DGroup>
                 </helix:CoordinateSystemVisual3D.Transform>
             </helix:CoordinateSystemVisual3D>
 
@@ -51,6 +61,13 @@
             <helix:CoordinateSystemVisual3D>
                 <helix:CoordinateSystemVisual3D.Transform>
                     <Transform3DGroup>
+                        <ScaleTransform3D ScaleX="3" ScaleY="3" ScaleZ="3"/>
+                        <RotateTransform3D CenterX="0" CenterY="0" CenterZ="0">
+                            
+                            <RotateTransform3D.Rotation>
+                                <QuaternionRotation3D Quaternion="0 0 0 0" />
+                            </RotateTransform3D.Rotation>
+                        </RotateTransform3D>
                         <TranslateTransform3D OffsetX="{Binding Path=Model.WorkPlatform.Position.X, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                               OffsetY="{Binding Path=Model.WorkPlatform.Position.Y, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                               OffsetZ="{Binding Path=Model.WorkPlatform.Position.Z, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
@@ -59,51 +76,51 @@
             </helix:CoordinateSystemVisual3D>
 
             <!-- ##################################################   Actuators   ################################################## -->
-            <helix:PipeVisual3D Diameter="0.1" InnerDiameter="0" 
+            <helix:PipeVisual3D Diameter="{StaticResource ActuatorShaftDiameter}" InnerDiameter="{StaticResource ActuatorInnerDiameter}"
                                 Fill="{Binding Path=Model.Actuators[0], Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Actuator_to_Fill_Converter}}"
                                 Point1="{Binding Path=Model.BasePlatform.Joints[0].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"
                                 Point2="{Binding Path=Model.WorkPlatform.Joints[0].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"/>
-            <helix:PipeVisual3D Diameter="0.2" InnerDiameter="0" Fill="Brown"
+            <helix:PipeVisual3D Diameter="{StaticResource ActuatorBaseDiameter}" InnerDiameter="{StaticResource ActuatorInnerDiameter}" Fill="{StaticResource ActuatorBaseColor}"
                                 Point1="{Binding Path=Model.BasePlatform.Joints[0].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"
                                 Point2="{Binding Path=Model.Actuators[0].BaseEnd, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"/>
 
-            <helix:PipeVisual3D Diameter="0.1" InnerDiameter="0" 
+            <helix:PipeVisual3D Diameter="{StaticResource ActuatorShaftDiameter}" InnerDiameter="{StaticResource ActuatorInnerDiameter}"
                                 Fill="{Binding Path=Model.Actuators[1], Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Actuator_to_Fill_Converter}}"
                                 Point1="{Binding Path=Model.BasePlatform.Joints[1].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"
                                 Point2="{Binding Path=Model.WorkPlatform.Joints[1].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"/>
-            <helix:PipeVisual3D Diameter="0.2" InnerDiameter="0" Fill="Brown"
+            <helix:PipeVisual3D Diameter="{StaticResource ActuatorBaseDiameter}" InnerDiameter="{StaticResource ActuatorInnerDiameter}" Fill="{StaticResource ActuatorBaseColor}"
                                 Point1="{Binding Path=Model.BasePlatform.Joints[1].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"
                                 Point2="{Binding Path=Model.Actuators[1].BaseEnd, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"/>
 
-            <helix:PipeVisual3D Diameter="0.1" InnerDiameter="0" 
+            <helix:PipeVisual3D Diameter="{StaticResource ActuatorShaftDiameter}" InnerDiameter="{StaticResource ActuatorInnerDiameter}"
                                 Fill="{Binding Path=Model.Actuators[2], Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Actuator_to_Fill_Converter}}"
                                 Point1="{Binding Path=Model.BasePlatform.Joints[2].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"
                                 Point2="{Binding Path=Model.WorkPlatform.Joints[2].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"/>
-            <helix:PipeVisual3D Diameter="0.2" InnerDiameter="0" Fill="Brown"
+            <helix:PipeVisual3D Diameter="{StaticResource ActuatorBaseDiameter}" InnerDiameter="{StaticResource ActuatorInnerDiameter}" Fill="{StaticResource ActuatorBaseColor}"
                                 Point1="{Binding Path=Model.BasePlatform.Joints[2].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"
                                 Point2="{Binding Path=Model.Actuators[2].BaseEnd, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"/>
 
-            <helix:PipeVisual3D Diameter="0.1" InnerDiameter="0" 
+            <helix:PipeVisual3D Diameter="{StaticResource ActuatorShaftDiameter}" InnerDiameter="{StaticResource ActuatorInnerDiameter}"
                                 Fill="{Binding Path=Model.Actuators[3], Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Actuator_to_Fill_Converter}}"
                                 Point1="{Binding Path=Model.BasePlatform.Joints[3].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"
                                 Point2="{Binding Path=Model.WorkPlatform.Joints[3].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"/>
-            <helix:PipeVisual3D Diameter="0.2" InnerDiameter="0" Fill="Brown"
+            <helix:PipeVisual3D Diameter="{StaticResource ActuatorBaseDiameter}" InnerDiameter="{StaticResource ActuatorInnerDiameter}" Fill="{StaticResource ActuatorBaseColor}"
                                 Point1="{Binding Path=Model.BasePlatform.Joints[3].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"
                                 Point2="{Binding Path=Model.Actuators[3].BaseEnd, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"/>
 
-            <helix:PipeVisual3D Diameter="0.1" InnerDiameter="0" 
+            <helix:PipeVisual3D Diameter="{StaticResource ActuatorShaftDiameter}" InnerDiameter="{StaticResource ActuatorInnerDiameter}"
                                 Fill="{Binding Path=Model.Actuators[4], Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Actuator_to_Fill_Converter}}"
                                 Point1="{Binding Path=Model.BasePlatform.Joints[4].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"
                                 Point2="{Binding Path=Model.WorkPlatform.Joints[4].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"/>
-            <helix:PipeVisual3D Diameter="0.2" InnerDiameter="0" Fill="Brown"
+            <helix:PipeVisual3D Diameter="{StaticResource ActuatorBaseDiameter}" InnerDiameter="{StaticResource ActuatorInnerDiameter}" Fill="{StaticResource ActuatorBaseColor}"
                                 Point1="{Binding Path=Model.BasePlatform.Joints[4].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"
                                 Point2="{Binding Path=Model.Actuators[4].BaseEnd, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"/>
 
-            <helix:PipeVisual3D Diameter="0.1" InnerDiameter="0" 
+            <helix:PipeVisual3D Diameter="{StaticResource ActuatorShaftDiameter}" InnerDiameter="{StaticResource ActuatorInnerDiameter}"
                                 Fill="{Binding Path=Model.Actuators[5], Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Actuator_to_Fill_Converter}}"
                                 Point1="{Binding Path=Model.BasePlatform.Joints[5].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"
                                 Point2="{Binding Path=Model.WorkPlatform.Joints[5].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"/>
-            <helix:PipeVisual3D Diameter="0.2" InnerDiameter="0" Fill="Brown"
+            <helix:PipeVisual3D Diameter="{StaticResource ActuatorBaseDiameter}" InnerDiameter="{StaticResource ActuatorInnerDiameter}" Fill="{StaticResource ActuatorBaseColor}"
                                 Point1="{Binding Path=Model.BasePlatform.Joints[5].Position, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"
                                 Point2="{Binding Path=Model.Actuators[5].BaseEnd, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Vector3D_to_Point3D_Converter}}"/>
         </helix:HelixViewport3D>

@@ -33,8 +33,8 @@ namespace Program
 
         private void Window_Initialized(object sender, EventArgs e)
         {
-            Model = new StuartPlatform(10.0, 3.0, 50.0, 2.0, 2, 5.0);
-            Model.Move(new Tools.Math.Vector3D(0, 0, 1));
+            Model = new StuartPlatform(16.5, 16.5, 50.0, 10.0, 28.5, 35.0);
+            Model.Move(new Tools.Math.Vector3D(0, 0, 30));
 
             T1 = (Model.WorkPlatform.Joints[0].Position - Model.BasePlatform.Joints[0].Position) * 0.5 + Model.BasePlatform.Joints[0].Position;
             OnPropertyChanged("Model");
