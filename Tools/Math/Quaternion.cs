@@ -28,7 +28,7 @@ namespace Tools.Math
         public Quaternion Inverse
         {
             get {
-                return null; //TODO Quaternion Inverse
+                return (Conjugate / System.Math.Pow(Norm, 2));
             }
         }
 
@@ -73,7 +73,7 @@ namespace Tools.Math
             D = vector.Z;
         }
 
-
+        //TODO Quaternion(Vector3D)
 
         public static Quaternion operator +(Quaternion q1, Quaternion q2)
         {
@@ -188,10 +188,6 @@ namespace Tools.Math
                 D = q1.D / q2,
             };
         }
-
-
-
-
 
         public override string ToString()
         {
