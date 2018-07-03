@@ -128,11 +128,11 @@ namespace Tools.Math
 
         public override string ToString()
         {
-            return $"|\t {X.ToString("N3")}\t {Y.ToString("N3")}\t {Z.ToString("N3")}\t |";
+            return $"{X.ToString("N3")} {Y.ToString("N3")} {Z.ToString("N3")}";
         }
         public string ToString(string format = "E3")
         {
-            return $"|\t {X.ToString(format)}\t {Y.ToString(format)}\t {Z.ToString(format)}\t |";
+            return $"{X.ToString(format)} {Y.ToString(format)} {Z.ToString(format)}";
         }
     }
 
