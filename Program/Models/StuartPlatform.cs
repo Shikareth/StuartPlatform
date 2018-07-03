@@ -29,35 +29,36 @@ namespace Program.Models
         /// <param name="t">Translation vector</param>
         public void Move(Vector3D t)
         {
-            WorkPlatform.Position += WorkPlatform.Rotation * t;
+            WorkPlatform.Position += WorkPlatform.Q.Rotate(t);
         }
 
         /// <summary>
-        /// Rotate work platform by 'R'
+        /// Rotate work platform by 'Q'
         /// </summary>
         /// <param name="R">Rotation matrix</param>
-        public void Move(Matrix R)
+        public void Move(Quaternion Q)
         {
-            WorkPlatform.Rotation = R * WorkPlatform.Rotation;
+            WorkPlatform.Q = Q * WorkPlatform.Q;
         }
 
         /// <summary>
-        /// Rotate work platform by 'R' and then translate by vector 't'
+        /// Rotate work platform by 'Q' and then translate by vector 't'
         /// </summary>
-        /// <param name="R">Rotation matrix</param>
+        /// <param name="Q">Rotation matrix</param>
         /// <param name="t">Translation vector</param>
-        public void Move(Matrix R, Vector3D t)
+        public void Move(Quaternion Q, Vector3D t)
         {
-            WorkPlatform.Rotation = R * WorkPlatform.Rotation;
-            WorkPlatform.Position += WorkPlatform.Rotation * t;
+            WorkPlatform.Q = Q * WorkPlatform.Q;
+            WorkPlatform.Position += WorkPlatform.Q.Rotate(t);
         }
+
 
         // Parts classes
 
         public class Platform
         {
             public Vector3D Position { get; set; } = new Vector3D(0, 0, 0);
-            public Matrix Rotation { get; set; } = Matrix.I;
+            public Quaternion Q { get; set; } = Quaternion.I;
 
             /// <summary>
             /// Distance of the joints from center of the platform. 
@@ -123,9 +124,10 @@ namespace Program.Models
             public Vector3D Position
             {
                 get {
-                    return parent.Position + parent.Rotation * position;
+                    return parent.Position + parent.Q.Rotate(position);
                 }
             }
+
 
             public Joint(Vector3D position, Platform parent)
             {

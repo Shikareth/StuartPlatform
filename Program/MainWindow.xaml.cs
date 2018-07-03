@@ -33,7 +33,8 @@ namespace Program
 
         private void Window_Initialized(object sender, EventArgs e)
         {
-            Model = new StuartPlatform(16.5, 16.5, 50.0, 10.0, 28.5, 35.0);
+
+            Model = new StuartPlatform(16.5, 16.5, 100.0, 10.0, 28.5, 35.0);
             Model.Move(new Tools.Math.Vector3D(0, 0, 30));
 
             T1 = (Model.WorkPlatform.Joints[0].Position - Model.BasePlatform.Joints[0].Position) * 0.5 + Model.BasePlatform.Joints[0].Position;
@@ -48,6 +49,7 @@ namespace Program
 
         private void Viewport_KeyDown(object sender, KeyEventArgs e)
         {
+            // XY Movement
             if(e.Key == Key.NumPad4)
             {
                 Model.Move(new Tools.Math.Vector3D(-0.1, 0, 0));
@@ -68,16 +70,42 @@ namespace Program
                 Model.Move(new Tools.Math.Vector3D(0, -0.1, 0));
                 OnPropertyChanged("Model");
             }
-            if (e.Key == Key.NumPad1)
+
+            // Z axis movement
+            if (e.Key == Key.OemPlus)
             {
                 Model.Move(new Tools.Math.Vector3D(0, 0, 0.1));
                 OnPropertyChanged("Model");
             }
-            if (e.Key == Key.NumPad3)
+            if (e.Key == Key.OemMinus)
             {
                 Model.Move(new Tools.Math.Vector3D(0, 0, -0.1));
                 OnPropertyChanged("Model");
             }
+
+            // Rotations
+            if (e.Key == Key.NumPad1)
+            {
+                Model.Move(new Tools.Math.Quaternion(Tools.Math.Misc.DegToRad(-1), Model.WorkPlatform.Q.Rotate(new Tools.Math.Vector3D(0, 0, 1))));
+                OnPropertyChanged("Model");
+            }
+            if (e.Key == Key.NumPad3)
+            {
+                Model.Move(new Tools.Math.Quaternion(Tools.Math.Misc.DegToRad(1), Model.WorkPlatform.Q.Rotate(new Tools.Math.Vector3D(0, 0, 1))));
+                OnPropertyChanged("Model");
+            }
+
+            if (e.Key == Key.NumPad7)
+            {
+                Model.Move(new Tools.Math.Quaternion(Tools.Math.Misc.DegToRad(-1), Model.WorkPlatform.Q.Rotate(new Tools.Math.Vector3D(1, 0, 0))));
+                OnPropertyChanged("Model");
+            }
+            if (e.Key == Key.NumPad9)
+            {
+                Model.Move(new Tools.Math.Quaternion(Tools.Math.Misc.DegToRad(1), Model.WorkPlatform.Q.Rotate(new Tools.Math.Vector3D(1, 0, 0))));
+                OnPropertyChanged("Model");
+            }
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

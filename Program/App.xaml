@@ -11,6 +11,7 @@
         <converters:Double_to_Multiplied x:Key="Double_to_Multiplied_Converter"/>
 
         <converters:Vector3D_to_Point3D x:Key="Vector3D_to_Point3D_Converter"/>
+        <converters:ToolsMathQuaternion_to_Media3DQuaternion x:Key="ToolsMathQuaternion_to_Media3DQuaternion_Converter"/>
 
         <converters:Actuator_to_Fill x:Key="Actuator_to_Fill_Converter"/>
     </Application.Resources>

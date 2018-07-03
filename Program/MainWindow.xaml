@@ -55,6 +55,13 @@
                         <TranslateTransform3D OffsetX="{Binding Path=Model.WorkPlatform.Position.X, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                               OffsetY="{Binding Path=Model.WorkPlatform.Position.Y, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                               OffsetZ="{Binding Path=Model.WorkPlatform.Position.Z, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <RotateTransform3D CenterX="{Binding Path=Model.WorkPlatform.Position.X, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                           CenterY="{Binding Path=Model.WorkPlatform.Position.Y, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                           CenterZ="{Binding Path=Model.WorkPlatform.Position.Z, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                            <RotateTransform3D.Rotation>
+                                <QuaternionRotation3D Quaternion="{Binding Path=Model.WorkPlatform.Q, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ToolsMathQuaternion_to_Media3DQuaternion_Converter}}" />
+                            </RotateTransform3D.Rotation>
+                        </RotateTransform3D>
                     </Transform3DGroup>
                 </helix:PipeVisual3D.Transform>
             </helix:PipeVisual3D>
@@ -62,15 +69,16 @@
                 <helix:CoordinateSystemVisual3D.Transform>
                     <Transform3DGroup>
                         <ScaleTransform3D ScaleX="3" ScaleY="3" ScaleZ="3"/>
-                        <RotateTransform3D CenterX="0" CenterY="0" CenterZ="0">
-                            
-                            <RotateTransform3D.Rotation>
-                                <QuaternionRotation3D Quaternion="0 0 0 0" />
-                            </RotateTransform3D.Rotation>
-                        </RotateTransform3D>
                         <TranslateTransform3D OffsetX="{Binding Path=Model.WorkPlatform.Position.X, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                               OffsetY="{Binding Path=Model.WorkPlatform.Position.Y, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                               OffsetZ="{Binding Path=Model.WorkPlatform.Position.Z, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <RotateTransform3D CenterX="{Binding Path=Model.WorkPlatform.Position.X, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                           CenterY="{Binding Path=Model.WorkPlatform.Position.Y, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                           CenterZ="{Binding Path=Model.WorkPlatform.Position.Z, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                            <RotateTransform3D.Rotation>
+                                <QuaternionRotation3D Quaternion="{Binding Path=Model.WorkPlatform.Q, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ToolsMathQuaternion_to_Media3DQuaternion_Converter}}" />
+                            </RotateTransform3D.Rotation>
+                        </RotateTransform3D>
                     </Transform3DGroup>
                 </helix:CoordinateSystemVisual3D.Transform>
             </helix:CoordinateSystemVisual3D>

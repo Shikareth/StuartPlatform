@@ -113,6 +113,7 @@
     <Compile Include="Converters\Double_to_Half.cs" />
     <Compile Include="Converters\Double_to_Multiplied.cs" />
     <Compile Include="Converters\Actuator_to_Fill.cs" />
+    <Compile Include="Converters\ToolsMathQuaternion_to_Media3DQuaternion.cs" />
     <Compile Include="Converters\Vector3D_to_Point3D.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MainWindow.xaml.cs">

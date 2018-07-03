@@ -8,47 +8,53 @@ namespace Tools.Math
 {
     public class Quaternion
     {
-        public double A { get; set; } = 0.0;
-        public double B { get; set; } = 0.0;
-        public double C { get; set; } = 0.0;
-        public double D { get; set; } = 0.0;
+        public double W { get; set; } = 0.0;
+        public double X { get; set; } = 0.0;
+        public double Y { get; set; } = 0.0;
+        public double Z { get; set; } = 0.0;
+        public static Quaternion I { get; } = new Quaternion(1, 0, 0, 0);
 
         public Quaternion Unit
         {
             get {
-                return (this / Norm);
+                return (this / Norm); 
             }
         }
         public Quaternion Conjugate
         {
             get {
-                return new Quaternion(A, -B, -C, -D);
+                return new Quaternion(W, -X, -Y, -Z);
+            }
+        }
+        public double Norm
+        {
+            get {
+                return System.Math.Sqrt(System.Math.Pow(W, 2) + System.Math.Pow(X, 2) + System.Math.Pow(Y, 2) + System.Math.Pow(Z, 2));
+            }
+        }
+        public double Norm2
+        {
+            get {
+                return System.Math.Pow(W, 2) + System.Math.Pow(X, 2) + System.Math.Pow(Y, 2) + System.Math.Pow(Z, 2);
             }
         }
         public Quaternion Inverse
         {
             get {
-                return (Conjugate / System.Math.Pow(Norm, 2));
+                return (Conjugate / Norm2);
             }
         }
 
         public Vector3D Vector
         {
             get {
-                return new Vector3D(B, C, D);
+                return new Vector3D(X, Y, Z);
             }
         }
         public double Scalar
         {
             get {
-                return A;
-            }
-        }
-
-        public double Norm
-        {
-            get {
-                return System.Math.Sqrt(System.Math.Pow(A, 2) + System.Math.Pow(B, 2) + System.Math.Pow(C, 2) + System.Math.Pow(D, 2));
+                return W;
             }
         }
 
@@ -57,52 +63,70 @@ namespace Tools.Math
 
         }
 
-        public Quaternion(double a, double b, double c, double d)
+        public Quaternion(double w, double x, double y, double z)
         {
-            A = a;
-            B = b;
-            C = c;
-            D = d;
+            W = w;
+            X = x;
+            Y = y;
+            Z = z;
         }
 
-        public Quaternion(double scalar, Vector3D vector)
+        public Quaternion(double angle, Vector3D axis)
         {
-            A = scalar;
-            B = vector.X;
-            C = vector.Y;
-            D = vector.Z;
+            double s = System.Math.Sin(angle / 2);
+            W = System.Math.Cos(angle / 2);
+            X = -axis.X * s;
+            Y = -axis.Y * s;
+            Z = -axis.Z * s;
         }
 
-        //TODO Quaternion(Vector3D)
+        public Quaternion(Vector3D v)
+        {
+            W = 0.0;
+            X = v.X;
+            Y = v.Y;
+            Z = v.Z;
+        }
+
+        public Vector3D Rotate(Vector3D v)
+        {
+            var result = this * new Quaternion(v) * Inverse;
+            return new Vector3D(result.X, result.Y, result.Z);
+        }
+
+        public static double Distance(Quaternion q1, Quaternion q2)
+        {
+            return (q1 - q2).Norm;
+        }
 
         public static Quaternion operator +(Quaternion q1, Quaternion q2)
         {
             return new Quaternion()
             {
-                A = q1.A + q2.A,
-                B = q1.B + q2.B,
-                C = q1.C + q2.C,
-                D = q1.D + q2.D,
+                W = q1.W + q2.W,
+                X = q1.X + q2.X,
+                Y = q1.Y + q2.Y,
+                Z = q1.Z + q2.Z,
             };
         }
         public static Quaternion operator +(double q1, Quaternion q2)
         {
             return new Quaternion()
             {
-                A = q1 + q2.A,
-                B = q1 + q2.B,
-                C = q1 + q2.C,
-                D = q1 + q2.D,
+                W = q1 + q2.W,
+                X = q1 + q2.X,
+                Y = q1 + q2.Y,
+                Z = q1 + q2.Z,
             };
         }
         public static Quaternion operator +(Quaternion q1, double q2)
         {
             return new Quaternion()
             {
-                A = q1.A + q2,
-                B = q1.B + q2,
-                C = q1.C + q2,
-                D = q1.D + q2,
+                W = q1.W + q2,
+                X = q1.X + q2,
+                Y = q1.Y + q2,
+                Z = q1.Z + q2,
             };
         }
 
@@ -110,30 +134,30 @@ namespace Tools.Math
         {
             return new Quaternion()
             {
-                A = q1.A - q2.A,
-                B = q1.B - q2.B,
-                C = q1.C - q2.C,
-                D = q1.D - q2.D,
+                W = q1.W - q2.W,
+                X = q1.X - q2.X,
+                Y = q1.Y - q2.Y,
+                Z = q1.Z - q2.Z,
             };
         }
         public static Quaternion operator -(double q1, Quaternion q2)
         {
             return new Quaternion()
             {
-                A = q1 - q2.A,
-                B = q1 - q2.B,
-                C = q1 - q2.C,
-                D = q1 - q2.D,
+                W = q1 - q2.W,
+                X = q1 - q2.X,
+                Y = q1 - q2.Y,
+                Z = q1 - q2.Z,
             };
         }
         public static Quaternion operator -(Quaternion q1, double q2)
         {
             return new Quaternion()
             {
-                A = q1.A - q2,
-                B = q1.B - q2,
-                C = q1.C - q2,
-                D = q1.D - q2,
+                W = q1.W - q2,
+                X = q1.X - q2,
+                Y = q1.Y - q2,
+                Z = q1.Z - q2,
             };
         }
 
@@ -141,30 +165,30 @@ namespace Tools.Math
         {
             return new Quaternion()
             {
-                A = q1.A * q2.A - q1.B * q2.B - q1.C * q2.C - q1.D * q2.D,
-                B = q1.A * q2.B + q1.B * q2.A - q1.C * q2.D - q1.D * q2.C,
-                C = q1.A * q2.C - q1.B * q2.D + q1.C * q2.A + q1.D * q2.B,
-                D = q1.A * q2.D + q1.B * q2.C - q1.C * q2.B + q1.D * q2.A
+                W = q1.W * q2.W - q1.X * q2.X - q1.Y * q2.Y - q1.Z * q2.Z,
+                X = q1.W * q2.X + q1.X * q2.W + q1.Y * q2.Z - q1.Z * q2.Y,
+                Y = q1.W * q2.Y - q1.X * q2.Z + q1.Y * q2.W + q1.Z * q2.X,
+                Z = q1.W * q2.Z + q1.X * q2.Y - q1.Y * q2.X + q1.Z * q2.W
             };
         }
         public static Quaternion operator *(double q1, Quaternion q2)
         {
             return new Quaternion()
             {
-                A = q1 * q2.A,
-                B = q1 * q2.B,
-                C = q1 * q2.C,
-                D = q1 * q2.D,
+                W = q1 * q2.W,
+                X = q1 * q2.X,
+                Y = q1 * q2.Y,
+                Z = q1 * q2.Z,
             };
         }
         public static Quaternion operator *(Quaternion q1, double q2)
         {
             return new Quaternion()
             {
-                A = q1.A * q2,
-                B = q1.B * q2,
-                C = q1.C * q2,
-                D = q1.D * q2,
+                W = q1.W * q2,
+                X = q1.X * q2,
+                Y = q1.Y * q2,
+                Z = q1.Z * q2,
             };
         }
 
@@ -172,26 +196,30 @@ namespace Tools.Math
         {
             return new Quaternion()
             {
-                A = q1 / q2.A,
-                B = q1 / q2.B,
-                C = q1 / q2.C,
-                D = q1 / q2.D,
+                W = q1 / q2.W,
+                X = q1 / q2.X,
+                Y = q1 / q2.Y,
+                Z = q1 / q2.Z,
             };
         }
         public static Quaternion operator /(Quaternion q1, double q2)
         {
             return new Quaternion()
             {
-                A = q1.A / q2,
-                B = q1.B / q2,
-                C = q1.C / q2,
-                D = q1.D / q2,
+                W = q1.W / q2,
+                X = q1.X / q2,
+                Y = q1.Y / q2,
+                Z = q1.Z / q2,
             };
         }
 
         public override string ToString()
         {
-            return $"{A} {B} {C} {D}";
+            return $"{W} {X} {Y} {Z}";
+        }
+        public string ToString(string format = "N3")
+        {
+            return $"{W.ToString(format)} {X.ToString(format)} {Y.ToString(format)} {Z.ToString(format)}";
         }
     }
 }
