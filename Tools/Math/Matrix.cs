@@ -744,12 +744,11 @@ namespace Tools.Math
 
             for (int y = 0; y < Rows; y++)
             {
-                matrix += "|\t";
-
                 for (int x = 0; x < Columns; x++)
-                    matrix += Data[y * Columns + x].ToString("N3") + "\t";
+                    matrix += Data[y * Columns + x].ToString("N3") + " ";
 
-                matrix += "|\n";
+                matrix.TrimEnd(' ');
+                matrix += "\n";
             }
 
             return matrix;
@@ -760,12 +759,11 @@ namespace Tools.Math
 
             for (int y = 0; y < Rows; y++)
             {
-                matrix += "|\t";
-
                 for (int x = 0; x < Columns; x++)
-                    matrix += Data[y * Columns + x].ToString(format) + "\t";
+                    matrix += Data[y * Columns + x].ToString(format) + " ";
 
-                matrix += "|\n";
+                matrix.TrimEnd(' ');
+                matrix += "\n";
             }
 
             return matrix;
