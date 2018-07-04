@@ -56,5 +56,6 @@ namespace Tools.Math
         {
             return To_min + ((To_max - To_min) / (From_max - From_min)) * (value - From_min);
         }
+
     }
 }

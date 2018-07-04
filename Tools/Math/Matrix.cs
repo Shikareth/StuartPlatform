@@ -538,7 +538,30 @@ namespace Tools.Math
 
             return new Matrix[2] { new Matrix(Columns, Columns, L), new Matrix(Columns, Columns, U) };
         }
-        
+
+        //TODO SVD algorithms
+        public SVDArgs SVD_Householder()
+        {
+            Matrix B = new Matrix(Rows, Columns, Data);
+            Matrix U = new Matrix(Rows, Columns, 0);
+            Matrix V = new Matrix(Columns, Columns, 0);
+
+            for (int k = 1; k < Columns; k++)
+            {
+                double[] q = new double[Data.Length];
+
+                for (int n = 0; n < Rows; n++)
+                {
+                    if (n < k - 1)
+                        B.Data[n * Columns + k] = 0;
+                }
+            }
+
+
+
+            return new SVDArgs();
+        }
+
         public static Matrix operator +(Matrix A, Matrix B)
         {
             if (A.Rows != B.Rows || A.Columns != B.Columns) return null;
@@ -629,7 +652,7 @@ namespace Tools.Math
                 array[n] = value;
             });
 
-            return new Matrix(A.Rows, A.Columns, array);
+            return new Matrix(A.Rows, B.Columns, array);
         }
         public static Matrix operator *(Matrix A, double B)
         {
@@ -736,7 +759,26 @@ namespace Tools.Math
             return new Vector2D(array);
         }
 
-        public static Matrix I = new Matrix(Vector3D.iX, Vector3D.iY, Vector3D.iZ);
+        public static Matrix I(int size)
+        {
+            double[] data = new double[size * size];
+            Parallel.For(0, data.Length, (n) => { 
+                if (n % size == n / size) data[n] = 1;
+                else data[n] = 0;
+            });
+
+            return new Matrix(size, size, data);
+        }
+        public static Matrix I(int rows, int columns)
+        {
+            double[] data = new double[rows * columns];
+            Parallel.For(0, data.Length, (n) => {
+                if (n % columns == n / columns) data[n] = 1;
+                else data[n] = 0;
+            });
+
+            return new Matrix(rows, columns, data);
+        }
 
         public override string ToString()
         {
@@ -769,5 +811,11 @@ namespace Tools.Math
             return matrix;
         }
 
+        public class SVDArgs
+        {
+            Matrix U { get; set; }
+            Matrix E { get; set; }
+            Matrix V { get; set; }
+        }
     }
 }
