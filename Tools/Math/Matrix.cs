@@ -25,6 +25,8 @@ namespace Tools.Math
 
         public Matrix(int rows, int columns, IEnumerable<double> data)
         {
+            if (data.Count() != rows * columns) return;
+
             Data = new double[rows * columns];
             Rows = rows;
             Columns = columns;
@@ -560,6 +562,15 @@ namespace Tools.Math
 
 
             return new SVDArgs();
+        }
+
+        public static Matrix Householder(Matrix v)
+        {
+            if (!(v.Data.Length == v.Columns || v.Data.Length == v.Rows)) return null;
+
+            Matrix Identity = I(v.Data.Length);
+            var v_transpose = v.Transposed();
+            return Identity - (2 * (v * v_transpose).Data[0]) / (v_transpose * v).Data[0];
         }
 
         public static Matrix operator +(Matrix A, Matrix B)
