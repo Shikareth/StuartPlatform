@@ -324,18 +324,26 @@ namespace Tools.Math
         public override string ToString()
         {
             string result = "";
-            foreach (var item in Data)
-                result += item.ToString("N3") + " ";
-            result.TrimEnd(' ');
+
+            for (int j = 0; j < Rows; j++)
+            {
+                for (int i = 0; i < Columns; i++)
+                    result += Data[j*Columns + i].ToString("N3") + " ";
+                result += "\n";
+            }
 
             return result;
         }
         public string ToString(string format = "N3")
         {
             string result = "";
-            foreach (var item in Data)
-                result += item.ToString(format) + " ";
-            result.TrimEnd(' ');
+
+            for (int j = 0; j < Rows; j++)
+            {
+                for (int i = 0; i < Columns; i++)
+                    result += Data[j * Columns + i].ToString("N3") + " ";
+                result += "\n";
+            }
 
             return result;
         }

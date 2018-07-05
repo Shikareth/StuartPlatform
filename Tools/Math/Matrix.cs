@@ -496,6 +496,31 @@ namespace Tools.Math
             return det;
         }
 
+        public Vector GetRow(int row)
+        {
+            if (row < 0 || row >= Rows) return null;
+
+            double[] data = new double[Columns];
+            Parallel.For(0, data.Length, (n) =>
+            {
+                data[n] = Data[row * Columns + n];
+            });
+
+           return new Vector(1, Columns, data);
+        }
+        public Vector GetColumn(int column)
+        {
+            if (column < 0 || column >= Columns) return null;
+
+            double[] data = new double[Rows];
+            Parallel.For(0, data.Length, (n) =>
+            {
+                data[n] = Data[n * Columns + column];
+            });
+
+            return new Vector(Rows, 1, data);
+        }
+
         //TODO check if correct
         public Matrix[] LU_Doolittle()
         {
@@ -564,13 +589,54 @@ namespace Tools.Math
             return new SVDArgs();
         }
 
-        public static Matrix Householder(Matrix v)
+        public Tuple<Matrix, Matrix> QR_Householder()
         {
-            if (!(v.Data.Length == v.Columns || v.Data.Length == v.Rows)) return null;
+            Matrix Q = Matrix.I(Rows);
+            Matrix R = this;
+            for (int k = 0; k < Columns; k++)
+            {
+                Vector x = R.GetColumn(k);
+
+                for (int i = 0; i < k; i++)
+                    x.Data[i] = 0;
+
+                double[] w_array = new double[x.Data.Length];
+                for (int i = 0; i < w_array.Length; i++)
+                {
+                    if (i == k)
+                        w_array[i] = x.Length;
+                    else
+                        w_array[i] = 0.0;
+                }
+                Vector w = new Vector(x.Rows, x.Columns, w_array);
+
+                Vector v = w - x;
+
+                Matrix I = Matrix.I(v.Data.Length);
+                var v_transpose = v.Transposed();
+
+                Matrix H = I - (2 * (v * v_transpose)) * (1 / (v_transpose * v));
+
+                R = H * R;
+                Q = Q * H;
+            }
+
+            return new Tuple<Matrix, Matrix>(Q, R);
+        }
+
+        public static Matrix Householder(Vector x)
+        {
+            if (!(x.Data.Length == x.Columns || x.Data.Length == x.Rows)) return null;
+
+            double[] w_array = new double[x.Data.Length];
+            w_array[0] = x.Length;
+            Vector w = new Vector(x.Rows, x.Columns, w_array);
+
+            Vector v = w - x;
 
             Matrix Identity = I(v.Data.Length);
             var v_transpose = v.Transposed();
-            return Identity - (2 * (v * v_transpose).Data[0]) / (v_transpose * v).Data[0];
+            return Identity - (2 * (v * v_transpose)) * (1 / (v_transpose * v));
         }
 
         public static Matrix operator +(Matrix A, Matrix B)
