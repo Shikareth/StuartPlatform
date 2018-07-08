@@ -92,17 +92,17 @@ namespace Tools.Math
             var B = 1 - System.Math.Cos(angle);
             var C = System.Math.Sin(angle);
 
-            Data[0] = A + System.Math.Pow(axis.X, 2) * B;
+            Data[0] = A + axis.X * axis.X * B;
             Data[1] = axis.X * axis.Y * B - axis.Z * C;
             Data[2] = axis.X * axis.Z * B + axis.Y * C;
 
             Data[3] = axis.Y * axis.X * B + axis.Z * C;
-            Data[4] = A + System.Math.Pow(axis.Y, 2) * B;
+            Data[4] = A + axis.Y * axis.Y * B;
             Data[5] = axis.Y * axis.Z * B - axis.X * C;
 
             Data[6] = axis.Z * axis.X * B - axis.Y * C;
             Data[7] = axis.Z * axis.Y * B + axis.X * C;
-            Data[8] = A + System.Math.Pow(axis.Z, 2) * B;
+            Data[8] = A + axis.Z * axis.Z * B;
 
         }
 
@@ -521,74 +521,6 @@ namespace Tools.Math
             return new Vector(Rows, 1, data);
         }
 
-        //TODO check if correct
-        public Matrix[] LU_Doolittle()
-        {
-            if (Rows != Columns) return null;
-
-            double[] L = new double[Data.Length];
-            double[] U = new double[Data.Length];
-
-
-            for (int i = 0; i < Columns; i++)
-            {
-
-                // Upper triangular
-                for (int k = 0; k < Columns; k++)
-                {
-                    // SUM{ L(i, j) * U(j, k) }
-                    double sum = 0;
-                    for (int j = 0; j < i; j++)
-                        sum += L[i * Columns + j] * U[j * Columns + k];
-
-                    // U(i, k) =
-                    U[i * Columns + k] = Data[i * Columns + k] - sum;
-                }
-
-                // Lower triangular
-                for (int k = 0; k < Columns; k++)
-                {
-                    if (i == k)
-                        L[i*Columns + i] = 1;
-                    else
-                    {
-                        // SUM{ L(k, j) * U(j, i) }
-                        double sum = 0;
-                        for (int j = 0; j < i; j++)
-                            sum += L[k * Columns + j] * U[j * Columns + i];
-
-                        // L(k, i) =
-                        U[k * Columns + i] = (Data[k * Columns + i] - sum) / U[i * Columns + i];
-                    }
-                }
-            }
-
-            return new Matrix[2] { new Matrix(Columns, Columns, L), new Matrix(Columns, Columns, U) };
-        }
-
-        //TODO SVD algorithms
-        public SVDArgs SVD_Householder()
-        {
-            Matrix B = new Matrix(Rows, Columns, Data);
-            Matrix U = new Matrix(Rows, Columns, 0);
-            Matrix V = new Matrix(Columns, Columns, 0);
-
-            for (int k = 1; k < Columns; k++)
-            {
-                double[] q = new double[Data.Length];
-
-                for (int n = 0; n < Rows; n++)
-                {
-                    if (n < k - 1)
-                        B.Data[n * Columns + k] = 0;
-                }
-            }
-
-
-
-            return new SVDArgs();
-        }
-
         public Tuple<Matrix, Matrix> QR_Householder()
         {
             Matrix Q = Matrix.I(Rows);
@@ -624,6 +556,7 @@ namespace Tools.Math
             return new Tuple<Matrix, Matrix>(Q, R);
         }
 
+        //TODO Investigete why this algorithm have 0.26% failrate over 1000000 samples [x64][Release] - probably square root is inconsistent
         public static Matrix Householder(Vector x)
         {
             if (!(x.Data.Length == x.Columns || x.Data.Length == x.Rows)) return null;
@@ -636,7 +569,7 @@ namespace Tools.Math
 
             Matrix Identity = I(v.Data.Length);
             var v_transpose = v.Transposed();
-            return Identity - (2 * (v * v_transpose)) * (1 / (v_transpose * v));
+            return Identity - (2 * (v * v_transpose)) / (v_transpose * v);
         }
 
         public static Matrix operator +(Matrix A, Matrix B)
@@ -836,12 +769,37 @@ namespace Tools.Math
             return new Vector2D(array);
         }
 
+        public static Matrix operator /(Matrix A, double B)
+        {
+            double[] array = new double[A.Rows * A.Columns];
+
+            Parallel.For(0, array.Length, (n) =>
+            {
+                array[n] = A.Data[n] / B;
+            });
+
+            return new Matrix(A.Rows, A.Columns, array);
+        }
+        public static Matrix operator /(double A, Matrix B)
+        {
+            double[] array = new double[B.Rows * B.Columns];
+
+            Parallel.For(0, array.Length, (n) =>
+            {
+                array[n] = A / B.Data[n];
+            });
+
+            return new Matrix(B.Rows, B.Columns, array);
+        }
+
         public static Matrix I(int size)
         {
             double[] data = new double[size * size];
             Parallel.For(0, data.Length, (n) => { 
-                if (n % size == n / size) data[n] = 1;
-                else data[n] = 0;
+                if (n % size == n / size)
+                    data[n] = 1;
+                else
+                    data[n] = 0;
             });
 
             return new Matrix(size, size, data);

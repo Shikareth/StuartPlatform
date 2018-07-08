@@ -20,7 +20,7 @@ namespace Tools.Math
         public double Length
         {
             get {
-                return System.Math.Sqrt(System.Math.Pow(X, 2) + System.Math.Pow(Y, 2));
+                return System.Math.Sqrt(X * X + Y * Y);
             }
         }
 

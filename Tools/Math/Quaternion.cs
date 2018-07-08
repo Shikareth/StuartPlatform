@@ -29,13 +29,13 @@ namespace Tools.Math
         public double Norm
         {
             get {
-                return System.Math.Sqrt(System.Math.Pow(W, 2) + System.Math.Pow(X, 2) + System.Math.Pow(Y, 2) + System.Math.Pow(Z, 2));
+                return System.Math.Sqrt(W * W + X * X + Y * Y + Z * Z);
             }
         }
         public double Norm2
         {
             get {
-                return System.Math.Pow(W, 2) + System.Math.Pow(X, 2) + System.Math.Pow(Y, 2) + System.Math.Pow(Z, 2);
+                return W * W + X * X + Y * Y + Z * Z;
             }
         }
         public Quaternion Inverse

@@ -30,7 +30,7 @@ namespace Tools.Math
         {
             return new Vector2D()
             {
-                X = System.Math.Sqrt(System.Math.Pow(v.X, 2) + System.Math.Pow(v.Y, 2)),
+                X = System.Math.Sqrt(v.X * v.X + v.Y * v.Y),
                 Y = System.Math.Atan2(v.Y, v.X)
             };
         }
@@ -38,7 +38,7 @@ namespace Tools.Math
         {
             return new Vector2D()
             {
-                X = System.Math.Sqrt(System.Math.Pow(X, 2) + System.Math.Pow(Y, 2)),
+                X = System.Math.Sqrt(X * X + Y * Y),
                 Y = System.Math.Atan2(Y, X)
             };
         }
@@ -56,6 +56,8 @@ namespace Tools.Math
         {
             return To_min + ((To_max - To_min) / (From_max - From_min)) * (value - From_min);
         }
+
+
 
     }
 }

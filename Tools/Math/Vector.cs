@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+
 
 namespace Tools.Math
 {
@@ -15,10 +17,9 @@ namespace Tools.Math
         {
             get {
                 double length = 0;
-                Parallel.For(0, Data.Length, (n) =>
-                {
-                    length += System.Math.Pow(Data[n], 2);
-                });
+                for (int n = 0; n < Data.Length; n++)
+                    length += Data[n] * Data[n];
+
                 return System.Math.Sqrt(length);
             }
         }
@@ -143,7 +144,6 @@ namespace Tools.Math
             return result;
         }
 
-        //TODO check if Vector addiction product depends on transposition
         public static Vector operator +(Vector A, Vector B)
         {
             if (A.Data.Length != B.Data.Length) return null;
