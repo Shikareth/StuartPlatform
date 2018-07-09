@@ -320,6 +320,28 @@ namespace Tools.Math
             return new Vector(A.Rows, B.Columns, array);
         }
 
+        public static Vector operator /(Vector A, double B)
+        {
+            double[] array = new double[A.Rows * A.Columns];
+
+            Parallel.For(0, array.Length, (n) =>
+            {
+                array[n] = A.Data[n] / B;
+            });
+
+            return new Vector(A.Rows, A.Columns, array);
+        }
+        public static Vector operator /(double A, Vector B)
+        {
+            double[] array = new double[B.Rows * B.Columns];
+
+            Parallel.For(0, array.Length, (n) =>
+            {
+                array[n] = A / B.Data[n];
+            });
+
+            return new Vector(B.Rows, B.Columns, array);
+        }
 
         public override string ToString()
         {
