@@ -533,19 +533,13 @@ namespace Tools.Math
                     x.Data[i] = 0;
 
                 double[] w_array = new double[x.Data.Length];
-                for (int i = 0; i < w_array.Length; i++)
-                {
-                    if (i == k)
-                        w_array[i] = x.Length;
-                    else
-                        w_array[i] = 0.0;
-                }
+                w_array[k] = x.Length;
                 Vector w = new Vector(x.Rows, x.Columns, w_array);
 
                 Vector v = w - x;
 
                 Matrix I = Matrix.I(v.Data.Length);
-                var v_transpose = v.Transposed();
+                Vector v_transpose = v.Transposed();
 
                 Matrix H = I - (2 * (v * v_transpose)) * (1 / (v_transpose * v));
 
@@ -556,22 +550,12 @@ namespace Tools.Math
             return new Tuple<Matrix, Matrix>(Q, R);
         }
 
-        //TODO Investigete why this algorithm have 0.26% failrate over 1000000 samples [x64][Release] - probably square root is inconsistent
         public static Matrix Householder(Vector x)
         {
             if (!(x.Data.Length == x.Columns || x.Data.Length == x.Rows)) return null;
 
             double[] w_array = new double[x.Data.Length];
             w_array[0] = x.Length;
-
-            double squaredSum = 0;
-            foreach (var element in x.Data)
-                squaredSum += element * element;
-
-            double delta = (w_array[0] * w_array[0] - squaredSum);
-            if (System.Math.Round(delta * delta, 12) != 0.0)
-                return null;
-
             Vector w = new Vector(x.Rows, x.Columns, w_array);
 
             Vector v = w - x;
@@ -582,30 +566,7 @@ namespace Tools.Math
             Matrix R = (v * v_transpose);
             double c = (v_transpose * v);
 
-            return Identity - ((2 * R) / c);
-        }
-
-        //HACK Householder returns entire content
-        public static Matrix HouseholderHacked(Vector x)
-        {
-            if (!(x.Data.Length == x.Columns || x.Data.Length == x.Rows)) return null;
-
-            Vector u = new Vector(x.Data.Length, false, 0.0);
-
-            double norm_x = x.Length;
-            if (norm_x == 0)
-                u.Data[0] = System.Math.Sqrt(2);
-            else
-            {
-                u = x.Normalized();
-                u.Data[0] = u.Data[0] + System.Math.Sign(u.Data[0]);
-                u = u / System.Math.Sqrt(System.Math.Abs(u.Data[0]));
-            }
-            Vector v = x - u * (u.Transposed() * x);
-
-            Matrix B = I(u.Data.Length) - (2 * u * u.Transposed());
-
-            return B;
+            return Identity - ((2 / c) * R);
         }
 
         public static Matrix operator +(Matrix A, Matrix B)
