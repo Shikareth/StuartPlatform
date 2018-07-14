@@ -47,6 +47,15 @@ namespace Tools.Math
             Z = d[2];
         }
 
+        public Vector3D(Vector v)
+        {
+            if (v.Data.Length != 3) return;
+
+            X = v.Data[0];
+            Y = v.Data[1];
+            Z = v.Data[2];
+        }
+
         public Vector3D Normalized()
         {
             var length = Length;
@@ -107,6 +116,11 @@ namespace Tools.Math
         {
             return new Vector3D(v.X * p, v.Y * p, v.Z * p);
         }
+        public static double operator *(Vector3D v, Vector3D p)
+        {
+            return v.X * p.X + v.Y * p.Y + v.Z * p.Z;
+        }
+
 
         public static Vector3D operator /(Vector3D v, double p)
         {

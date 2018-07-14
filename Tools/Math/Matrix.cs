@@ -569,6 +569,24 @@ namespace Tools.Math
             return Identity - ((2 / c) * R);
         }
 
+        public static Matrix Householder2(Vector x)
+        {
+            if (!(x.Data.Length == x.Columns || x.Data.Length == x.Rows)) return null;
+
+            Vector e = new Vector(x.Rows, x.Columns, new double[x.Data.Length]);
+            e.Data[0] = 1;
+
+            double norm = x.Length;
+            double sign = System.Math.Sign(x.Data[0]);
+            Vector u = x + (sign == 0 ? 1 : sign) * norm * e;
+            Vector v = u / u.Data[0];
+            Vector vt = v.Transposed();
+
+            Matrix H = I(x.Data.Length) - 2 * ((v * vt) / (vt * v));
+
+            return H;
+        }
+
         public static Matrix operator +(Matrix A, Matrix B)
         {
             if (A.Rows != B.Rows || A.Columns != B.Columns) return null;

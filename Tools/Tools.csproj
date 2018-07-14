@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions.cs" />
+    <Compile Include="Math\Geometry.cs" />
     <Compile Include="Math\Matrix.cs" />
     <Compile Include="Math\Misc.cs" />
     <Compile Include="Math\Quaternion.cs" />
