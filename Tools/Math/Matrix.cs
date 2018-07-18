@@ -37,6 +37,14 @@ namespace Tools.Math
             });
         }
 
+        public Matrix(Matrix A)
+        {
+            Data = new double[A.Data.Length];
+            A.Data.CopyTo(Data, 0);
+            Rows = A.Rows;
+            Columns = A.Columns;
+        }
+
         public Matrix(Vector3D ix, Vector3D iy, Vector3D iz)
         {
             Data = new double[9];
@@ -521,6 +529,39 @@ namespace Tools.Math
             return new Vector(Rows, 1, data);
         }
 
+        public Matrix Replace(int row, int column, Matrix A)
+        {
+            if (row < 0 || row > Rows - A.Rows) return null;
+            if (column < 0 || column > Columns - A.Columns) return null;
+
+            Matrix result = new Matrix(this);
+
+            Parallel.For(0, A.Data.Length, (n) =>
+            {
+                int _row = n / A.Columns;
+                int _col = n % A.Columns;
+
+                result.Data[(row + _row) * Columns + (column + _col)] = A.Data[n];
+            });
+
+            return result;
+        }
+        public Matrix Replace_InPlace(int row, int column, Matrix A)
+        {
+            if (row < 0 || row > Rows - A.Rows) return null;
+            if (column < 0 || column > Columns - A.Columns) return null;
+
+            Parallel.For(0, A.Data.Length, (n) =>
+            {
+                int _row = n / A.Columns;
+                int _col = n % A.Columns;
+
+                Data[(row + _row) * Columns + (column + _col)] = A.Data[n];
+            });
+
+            return this;
+        }
+
         public Tuple<Matrix, Matrix> QR_Householder()
         {
             Matrix Q = Matrix.I(Rows);
@@ -539,9 +580,9 @@ namespace Tools.Math
                 Vector v = w - x;
 
                 Matrix I = Matrix.I(v.Data.Length);
-                Vector v_transpose = v.Transposed();
+                Vector vt = v.Transposed();
 
-                Matrix H = I - (2 * (v * v_transpose)) * (1 / (v_transpose * v));
+                Matrix H = I - (2 * (v * vt)) * (1 / (vt * v));
 
                 R = H * R;
                 Q = Q * H;
@@ -550,6 +591,71 @@ namespace Tools.Math
             return new Tuple<Matrix, Matrix>(Q, R);
         }
 
+        public QRArgs QR_Householder2()
+        {
+            Matrix Q = I(Rows);
+            Matrix R = this;
+            for (int k = 0; k < Columns; k++)
+            {
+                Vector x = R.GetColumn(k);
+
+                for (int i = 0; i < k; i++)
+                    x.Data[i] = 0;
+
+                double[] w_array = new double[x.Data.Length];
+                w_array[k] = x.Length;
+                Vector e = new Vector(x.Rows, x.Columns, w_array);
+
+                double norm = x.Length;
+                double sign = System.Math.Sign(x.Data[0]);
+                Vector u = x + (sign == 0 ? 1 : sign) * norm * e;
+                Vector v = u / u.Data[k];
+                Vector vt = v.Transposed();
+
+                Matrix H = I(x.Data.Length) - 2 * ((v * vt) / (vt * v));
+
+                R = H * R;
+                Q = Q * H;
+            }
+
+            return new QRArgs() { Q = Q, R = R };
+        }
+
+        public QRArgs QR_Householder3()
+        {
+            QRArgs result = new QRArgs();
+            result.Hs = new Matrix[Columns];
+            result.Qs = new Matrix[Columns];
+            result.Rs = new Matrix[Columns];
+
+            Matrix Q = I(Rows);
+            Matrix R = this;
+            Matrix A = this;
+            for (int k = 0; k < Columns; k++)
+            {
+                if(k != 0)
+                    A = A.Minor(0, 0);
+
+                Vector x = A.GetColumn(0);
+
+                Matrix B = Householder2(x);
+
+                Matrix H = I(Rows).Replace(k, k, B);
+                result.Hs[k] = H;
+
+                R = H * R;
+                result.Rs[k] = R;
+                Q = Q * H;
+                result.Qs[k] = H;
+            }
+
+            result.Q = Q;
+            result.R = R;
+
+            return result;
+        }
+
+        [Obsolete("Unsafe")]
         public static Matrix Householder(Vector x)
         {
             if (!(x.Data.Length == x.Columns || x.Data.Length == x.Rows)) return null;
@@ -574,7 +680,7 @@ namespace Tools.Math
             if (!(x.Data.Length == x.Columns || x.Data.Length == x.Rows)) return null;
 
             Vector e = new Vector(x.Rows, x.Columns, new double[x.Data.Length]);
-            e.Data[0] = 1;
+            e.Data[0] = 1.0;
 
             double norm = x.Length;
             double sign = System.Math.Sign(x.Data[0]);
@@ -585,6 +691,48 @@ namespace Tools.Math
             Matrix H = I(x.Data.Length) - 2 * ((v * vt) / (vt * v));
 
             return H;
+        }
+
+        [Obsolete("Do not use")]
+        public static Tuple<Matrix, HHData> Householder2_Log(Vector x)
+        {
+            if (!(x.Data.Length == x.Columns || x.Data.Length == x.Rows)) return null;
+
+            HHData log = new HHData();
+
+            Vector e = new Vector(x.Rows, x.Columns, new double[x.Data.Length]);
+            e.Data[0] = 1.0;
+            log.E = e;
+
+            double norm = x.Length;
+            log.Norm = norm;
+
+            double sign = System.Math.Sign(x.Data[0]);
+            log.Sign = sign;
+
+            Vector u = x + (sign == 0 ? 1 : sign) * norm * e;
+            log.U = u;
+
+            Vector v = u / u.Data[0];
+            log.V = v;
+
+            Vector vt = v.Transposed();
+            log.Vt = vt;
+
+
+            Matrix I = Matrix.I(x.Data.Length);
+            log.I = I;
+
+            Matrix vvt = v * vt;
+            log.VVt = vvt;
+
+            double vtv = vt * v;
+            log.VtV = vtv;
+
+            Matrix H = I - 2 * (vvt / (vt * v));
+            log.H = H;
+
+            return new Tuple<Matrix, HHData>(H, log);
         }
 
         public static Matrix operator +(Matrix A, Matrix B)
@@ -866,6 +1014,33 @@ namespace Tools.Math
             Matrix U { get; set; }
             Matrix E { get; set; }
             Matrix V { get; set; }
+        }
+
+        public class QRArgs
+        {
+            public Matrix Q { get; internal set; }
+            public Matrix R { get; internal set; }
+
+            public Matrix[] Hs { get; internal set; }
+            public Matrix[] Qs { get; internal set; }
+            public Matrix[] Rs { get; internal set; }
+        }
+
+        public class HHData
+        {
+            public Vector E { get; set; }
+            public double Norm { get; set; }
+            public double Sign { get; set; }
+            public Vector U { get; set; }
+            public Vector V { get; set; }
+            public Vector Vt { get; set; }
+            public Matrix I { get; set; }
+
+            public Matrix VVt { get; set; }
+            public double VtV { get; set; }
+
+
+            public Matrix H { get; set; }
         }
 
         /*

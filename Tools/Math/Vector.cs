@@ -225,10 +225,8 @@ namespace Tools.Math
             {
                 double result = 0;
 
-                Parallel.For(0, A.Data.Length, (n) =>
-                {
+                for (int n = 0; n < A.Data.Length; n++)
                     result += A.Data[n] * B.Data[n];
-                });
 
                 return result;
             }

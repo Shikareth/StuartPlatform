@@ -53,9 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\EulerAngles.PNG" />
-    <Content Include="Images\RodriguezRotationFormula.PNG">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Images\RodriguezRotationFormula.PNG" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
