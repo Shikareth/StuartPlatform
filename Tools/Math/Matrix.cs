@@ -562,8 +562,13 @@ namespace Tools.Math
             return this;
         }
 
-        public Tuple<Matrix, Matrix> QR_Householder()
+        public QRArgs QR_Householder()
         {
+            QRArgs result = new QRArgs();
+            result.Hs = new Matrix[Columns];
+            result.Qs = new Matrix[Columns];
+            result.Rs = new Matrix[Columns];
+
             Matrix Q = Matrix.I(Rows);
             Matrix R = this;
             for (int k = 0; k < Columns; k++)
@@ -583,16 +588,27 @@ namespace Tools.Math
                 Vector vt = v.Transposed();
 
                 Matrix H = I - (2 * (v * vt)) * (1 / (vt * v));
+                result.Hs[k] = H;
 
                 R = H * R;
+                result.Rs[k] = R;
                 Q = Q * H;
+                result.Qs[k] = H;
             }
 
-            return new Tuple<Matrix, Matrix>(Q, R);
+            result.Q = Q;
+            result.R = R;
+
+            return result;
         }
 
         public QRArgs QR_Householder2()
         {
+            QRArgs result = new QRArgs();
+            result.Hs = new Matrix[Columns];
+            result.Qs = new Matrix[Columns];
+            result.Rs = new Matrix[Columns];
+
             Matrix Q = I(Rows);
             Matrix R = this;
             for (int k = 0; k < Columns; k++)
@@ -603,24 +619,32 @@ namespace Tools.Math
                     x.Data[i] = 0;
 
                 double[] w_array = new double[x.Data.Length];
-                w_array[k] = x.Length;
+                w_array[k] = 1;
                 Vector e = new Vector(x.Rows, x.Columns, w_array);
 
                 double norm = x.Length;
-                double sign = System.Math.Sign(x.Data[0]);
+                double sign = System.Math.Sign(x.Data[k]);
                 Vector u = x + (sign == 0 ? 1 : sign) * norm * e;
-                Vector v = u / u.Data[k];
+                Vector v = u / R.Data[k * Columns + k];
+                //Vector v = u / u.Length;
                 Vector vt = v.Transposed();
 
                 Matrix H = I(x.Data.Length) - 2 * ((v * vt) / (vt * v));
+                result.Hs[k] = H;
 
                 R = H * R;
+                result.Rs[k] = R;
                 Q = Q * H;
+                result.Qs[k] = H;
             }
 
-            return new QRArgs() { Q = Q, R = R };
+            result.Q = Q;
+            result.R = R;
+
+            return result;
         }
 
+        [Obsolete("Compare with QR_Householder2()")]
         public QRArgs QR_Householder3()
         {
             QRArgs result = new QRArgs();
